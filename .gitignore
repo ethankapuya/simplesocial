@@ -14,7 +14,7 @@ wheels/
 
 # IDE settings
 .idea/
-.devcontainer/
+.devcontainer
 
 # Database
 test.db
