@@ -5,6 +5,26 @@ import urllib.parse
 
 st.set_page_config(page_title="Simple Social", layout="wide")
 
+st.markdown(
+    """
+    <style>
+        /* Thin gray line */
+        .custom-hr {
+            border: none;
+            border-top: 1px solid #DDD;
+            margin-top: 0.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* This is in addition to the thin graey line, to reduce element spacing after media/text */
+        .stImage, .stVideo, .stMarkdown, .stText, .stCaption {
+            margin-bottom: 0.15rem !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 # Initialize session state
 if 'token' not in st.session_state:
     st.session_state.token = None
@@ -116,14 +136,14 @@ def feed_page():
 
     response = requests.get("http://localhost:8000/feed", headers=get_headers())
     if response.status_code == 200:
-        posts = response.json()["posts"]
+        posts = response.json()
 
         if not posts:
             st.info("No posts yet! Be the first to share something.")
             return
 
         for post in posts:
-            st.markdown("---")
+            st.markdown('<div class="custom-hr"></div>', unsafe_allow_html=True)
 
             # Header with user, date, and delete button (if owner)
             col1, col2 = st.columns([4, 1])
@@ -143,15 +163,15 @@ def feed_page():
             # Uniform media display with caption overlay
             caption = post.get('caption', '')
             if post['file_type'] == 'image':
-                uniform_url = create_transformed_url(post['url'], "", caption)
+                uniform_url = create_transformed_url(post['url'], "")
                 st.image(uniform_url, width=300)
+                st.text(caption)
             else:
                 # For videos: specify only height to maintain aspect ratio + caption overlay
                 uniform_video_url = create_transformed_url(post['url'], "w-400,h-200,cm-pad_resize,bg-blurred")
                 st.video(uniform_video_url, width=300)
                 st.caption(caption)
 
-            st.markdown("")  # Space between posts
     else:
         st.error("Failed to load feed")
 

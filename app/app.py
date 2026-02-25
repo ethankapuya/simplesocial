@@ -89,14 +89,14 @@ async def get_feed(
                 "file_type": post.file_type,
                 "file_name": post.file_name,
                 "created_at": post.created_at.isoformat(),
-                "isOwner": post.user_id == user.id,
+                "is_owner": post.user_id == user.id,
                 "email": user_dict.get(post.user_id, "Unknown")
             }
         )
     
     return posts_data
 
-@app.delete("/post/{post_id}")
+@app.delete("/posts/{post_id}")
 async def delete_post(post_id: str, session: AsyncSession = Depends(get_async_session), user: User = Depends(current_active_user)):
     try:
         post_uuid = uuid.UUID(post_id)
